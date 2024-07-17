@@ -2,8 +2,6 @@
 #include <HTTPClient.h>
 #include <SPI.h>
 #include "mcp_can.h"
-
-
 #define MOTOR_Q 3
 
 // Configuración de la red WiFi
