@@ -3,6 +3,12 @@
 #include <SPI.h>
 #include "mcp_can.h"
 #define MOTOR_Q 3
+#define VEL 60  
+
+// Configuración gyro
+
+const byte clockwise = 0x00;  // Definir la constante hexadecimal
+const byte counterwise = 0x01;  // Definir la constante hexadecimal
 
 // Configuración de la red WiFi
 const char* ssid = "Octopus";
@@ -103,6 +109,30 @@ void sendSpeedCommand(int motorIndex, float speed) {
         Serial.println(motorIndex + 1);
     }
 }
+void sendSingleTurnCommand(int motorIndex, byte spin, float speed, float angler) {
+    // Convertir velocidad a formato adecuado para el motor (ejemplo)
+    int32_t speedInt = (int32_t)(speed * 100); // Convertir a unidad interna si es necesario
+    int32_t angleInt = (int32_t)(angler * 100); // 
+
+    // Preparar datos del comando
+    byte commandData[8] = {
+        0xA6, spin,
+        (byte)(speedInt & 0xFF), 
+        (byte)((speedInt >> 8) & 0xFF), 
+        (byte)(angleInt & 0xFF), 
+        (byte)((angleInt >> 8) & 0xFF),
+        0x00, 0x00 
+    };
+    
+    if (CAN.sendMsgBuf(VELOCITY_COMMAND_IDS[motorIndex], 0, 8, commandData) == CAN_OK) {
+        Serial.print("Comando de velocidad enviado correctamente al Motor ");
+        Serial.println(motorIndex + 1);
+    } else {
+        Serial.print("Error al enviar comando de velocidad al Motor ");
+        Serial.println(motorIndex + 1);
+    }
+}
+
 
 CircleAngles query() {
     CircleAngles data;
@@ -175,6 +205,7 @@ void loop() {
     // Actualizar ángulos a intervalos regulares
     if (currentMillis - previousMillis >= interval) {
         actualAngles = getAngles();
+        Serial.println(actualAngles);
         previousMillis = currentMillis;
     }
 
@@ -184,13 +215,13 @@ void loop() {
         
         switch (receivedChar) {
             case 'A':
-                sendSpeedCommand(0, 5);
+                sendSpeedCommand(0, VEL);
                 break;
             case 'W':
-                sendSpeedCommand(1, 5);
+                sendSpeedCommand(1, VEL);
                 break;
             case 'U':
-                sendSpeedCommand(2, 5);
+                sendSpeedCommand(2, VEL);
                 break;
             case 'S':
                 sendSpeedCommand(0, 0);
