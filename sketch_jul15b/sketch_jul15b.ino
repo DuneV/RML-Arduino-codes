@@ -58,6 +58,10 @@ void loop() {
         {
           unableff();
           }
+        if (receivedChar == 'P')
+        {
+          configureCANID_R();
+         }
     }
 
     // Leer mensajes de retorno
@@ -100,6 +104,19 @@ void configureCANID() {
         Serial.println("Error al enviar comando de configuración CANID.");
     }
 }
+
+void configureCANID_R() {
+    // Comando para configurar el CANID
+    byte commandData[8] = {0xB6, 0x60, 0x01, 0x01, 0x00, 0x00, 0x00, 0x03 };
+    
+    if (CAN.sendMsgBuf(0x141, 0, 8, commandData) == CAN_OK) {
+        Serial.print("Comando de configuración CANID enviado correctamente");
+        Serial.println(0x03, HEX);
+    } else {
+        Serial.println("Error al enviar comando de configuración CANID.");
+    }
+}
+
 void multiencoder()
 {
    byte commandData[8] = {0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };

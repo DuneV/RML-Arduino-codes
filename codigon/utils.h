@@ -16,7 +16,7 @@ struct Angles {
 };
 
 struct CircleAngles {
-    int16_t circleAngle[MOTOR_Q];
+   int16_t motor_angle[MOTOR_Q]; 
 };
 
 // Declaraciones de funciones
@@ -26,6 +26,14 @@ void sendSpeedCommand(int motorIndex, float speed);
 void sendSingleTurnCommand(int motorIndex, byte spin, float speed, float angler);
 CircleAngles query();
 void stop_motor(unsigned long motorID);
+void open_gripper(int valvula, int compressor);
+void stay_gripper(int valvula, int compressor); 
+void close_gripper(int valvula, int compressor );
+void shutdown_m(int motorIndex);
+void sendActualTurnCommand(int motorIndex, float speed, float angler);
+void actualtozero(int motorIndex);
+void system_reset(int motorIndex);
+int16_t angle_receive(int motorIndex);
 
 #endif // UTILS_H
 
