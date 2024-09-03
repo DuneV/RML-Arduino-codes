@@ -77,6 +77,22 @@ void setup() {
     y_angle_init = actualAngles.angleY;
     z_angle_init = actualAngles.angleZ;
 }
+String classifyMovement(float angle_x, float angle_y, float angle_z) {
+    float threshold_x = 15.0;
+    float threshold_y = 15.0;
+
+    if (angle_x > threshold_x) {
+        return "Derecha";
+    } else if (angle_x < -threshold_x) {
+        return "Izquierda";
+    } else if (angle_y > threshold_y) {
+        return "Adelante";
+    } else if (angle_y < -threshold_y) {
+        return "Atrás";
+    } else {
+        return "Estable";
+    }
+}
 
 void loop() {
     unsigned long currentMillis = millis();
